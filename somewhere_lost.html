@@ -68,11 +68,17 @@
 			background-color:#3f3f3f;
 			border-top:10px solid blue;
 			}
-			#text{
+			#text1{
 			  color:white;
-			  font-size: 50px;
+			  font-size: 30px;
+			  font-family: monospace;
 			  position: absolute;
-			  top: 0;
+			  top: 5%;
+			  left: 2%;
+			  color:#00ff20;
+			  opacity: 0;
+			  font-weight: bold;
+			  z-index: 100;;
 			  
 			}
 			#acc{
@@ -84,10 +90,23 @@
 			  border-color: red;
 			  
 			}
+			#loading{
+			  position: absolute;
+			  z-index: 10;
+			  width: 100%;
+			  height: 100%;
+			  left:0;
+			  top:0;
+			  background-color: black;
+			  opacity: 1;
+			}
 		</style>
 	</head>
 	<body>
+	  <div id="loading">ciao</div>
 	  <div id='text'></div>
+	  
+	  <div id='text1' onclick="te();"><p>Year:2059<br>We found ourselfs in a trap.<br> The trap of the space.</p><p>We were somewhere, lost inside our CubeShip.<br>No fuel, no food. Our only chance is to take them from others.<br> "Making no prisoner".</p>The question is this:<br> How can we get home, between mothers and childs of the people we killed,<br> to get there once again...<br>The solutions is simple,<br> simply we do...</p></div>
 	  	  <div class="rotm"id="acc" onclick="Sss();">+/-</div>
 	  <div class="rotm"id="spa" onclick="onPointerMoveUp();look();">?</div>
 	 <!-- <div id="rada" onclick="look();"></div>-->
@@ -100,6 +119,28 @@
 	 
 		<script src="js/three.js"></script>
 		<script>
+		var idint = setInterval(function(){
+		  var loa = document.getElementById('loading');
+		  var opa =
+ Number(window.getComputedStyle(loa).getPropertyValue("opacity"));
+  if(opa > 0){
+		  loa.style.opacity = opa-0.01;
+		 } else{
+		    loa.style.display ="none";
+		    var t = document.getElementById('text1');
+		  var opat =
+ Number(window.getComputedStyle(t).getPropertyValue("opacity"));
+  if (opat < 1){
+		  t.style.opacity = opat+0.1;
+		  }else{
+		    clearInterval(idint);
+		  }
+		  }
+		},200);
+		function te(){ 
+		  document.getElementById('text1').style.display = 'none';
+		  
+		}
 		var thatx;
 		var thaty;
 		var thatz;
@@ -328,8 +369,9 @@ meshtri.translateZ(-5);
 if (intersects.length > 0 )
 {
   if(intersects[0].object == cube1 && clic==true){
-  alert('You just found the "The Cube!"');
-  cube1.position.x = Math.random() * 2000;
+   document.getElementById('text1').innerHTML = "<p>We found a CubeShip, but it's not enough. <br> We need more, as soon as we can...</p>";
+   document.getElementById('text1').style.display = "";
+   cube1.position.x = Math.random() * 2000;
 cube1.position.y = Math.random() * 2000;
 cube1.position.z = Math.random() * 2000;
   clic=false;
