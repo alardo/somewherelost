@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Somewhere Lost</title>
+		<style>
+			body { margin: 0;
+			font-size: 90px;
+			text-align: center;
+			}
+			.rot{
+			  position: fixed;
+			  background-color:black;
+			 background-image: url('res/iron.jpg');
+  background-position:center;
+  background-repeat: repeat;
+  background-size: contain;
+			  border: 7px solid red;
+			  left:0;
+			  margin: 20px;
+			  height: 25%;
+			  width: 15%;
+			  border-radius: 0% 30% 0% 0%;
+			  padding:10px;
+			  color: lightgrey;
+			}
+				.rotm{
+				  position: fixed;
+				  right: 0;
+			  background-color:black;
+			  background-image: url('res/iron.jpg');
+  background-position:center;
+  background-repeat: repeat;
+  background-size: contain;
+			  border: 7px solid green;
+			  margin: 20px;
+			  height: 25%;
+			  width: 15%;
+			  border-radius: 30% 0% 0% 0%;
+			  padding:10px;
+			  color:lightgrey;
+			}
+			#rx, #rxm, #acc, #spa{
+			  bottom:0;
+			  border-bottom: none;
+			  
+			}
+						#ry, #rym{
+			  
+			  bottom:15%;
+			}
+						#rz, #rzm{
+			  
+			  bottom:30%;
+			}
+			#rada{
+			  position: absolute;
+			  bottom:0;
+			  width: 100%;
+			  height: 20%;
+			  
+			  left:0%;
+			  margin: auto;
+			  background-image: url('res/radar.gif');
+  background-position:center;
+  background-repeat: no-repeat;
+  background-size: contain;
+			background-color:#3f3f3f;
+			border-top:10px solid blue;
+			}
+			#text{
+			  color:white;
+			  font-size: 50px;
+			  position: absolute;
+			  top: 0;
+			  
+			}
+			#acc{
+			  left:25%;
+			}
+			#spa{
+			  right:25%;
+			  border-radius: 0 30% 0 0;
+			  border-color: red;
+			  
+			}
+		</style>
+	</head>
+	<body>
+	  <div id='text'></div>
+	  	  <div class="rotm"id="acc" onclick="Sss();">+/-</div>
+	  <div class="rotm"id="spa" onclick="onPointerMoveUp();look();">?</div>
+	 <!-- <div id="rada" onclick="look();"></div>-->
+	  <div class="rot"id="rz" onclick="rotz();">Z+</div>
+	  <div class="rot"id="ry" onclick="roty();">Y+</div>
+	  <div class="rotm"id="rzm" onclick="rotzm();">Z-</div>
+	  <div class='rotm'id="rym" onclick="rotym();">Y-</div>
+	  	  <div class="rot"id="rx" onclick="rotx();">X+</div>
+	  <div class="rotm"id="rxm" onclick="rotxm();">X-</div>
+	 
+		<script src="js/three.js"></script>
+		<script>
+		var thatx;
+		var thaty;
+		var thatz;
+		var mex;
+		var mey;
+		var mez;
+			const scene = new THREE.Scene();
+			//scene.background= new THREE.Color(0x150573);
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 3000 );
+const spotLight = new THREE.PointLight(0xffffff, 2.5);
+scene.add(spotLight);
+
+const loader = new THREE.TextureLoader().load('res/face.jpg');
+const astr = new THREE.TextureLoader().load('res/astr.jpg');
+astr.crossOrigin="";
+astr.magFilter = THREE.NearestFilter;
+//const loader1 = new THREE.TextureLoader().load('https://cdna.artstation.com/p/assets/images/images/019/228/724/medium/sanwal-aftab-3.jpg?1562599921');
+const loader1 = new THREE.TextureLoader().load('res/planet1.jpg');
+			loader1.crossOrigin = "";
+ loader.crossOrigin ="";
+ loader1.magFilter = THREE.NearestFilter;
+ loader1.offset.set(.5,.5);
+ loader1.wrapS = THREE.RepeatWrapping;
+loader1.wrapT = THREE.RepeatWrapping;
+const loader2 = new THREE.TextureLoader().load('res/planet2.jpg');
+			loader2.crossOrigin = "";
+ loader2.magFilter = THREE.NearestFilter;
+ loader2.offset.set(.5,.5);
+ loader2.wrapS = THREE.RepeatWrapping;
+loader2.wrapT = THREE.RepeatWrapping;
+
+const loader3 = new THREE.TextureLoader().load('res/planet3.jpg');
+			loader3.crossOrigin = "";
+ loader3.magFilter = THREE.NearestFilter;
+ loader3.offset.set(.5,.5);
+ loader3.wrapS = THREE.RepeatWrapping;
+loader3.wrapT = THREE.RepeatWrapping;
+
+const loaderb = new THREE.TextureLoader();
+loaderb.load('res/stars.jpg' , function(texture)
+            {
+             texture.magFilter = THREE.NearestFilter;
+ //texture.offset.set(.5,.5);
+ //texture.wrapS = THREE.RepeatWrapping;
+ //texture.wrapT = THREE.RepeatWrapping;
+             scene.background = texture;  
+            });
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			
+			
+			
+			document.body.appendChild( renderer.domElement );
+			
+			const pointer = new THREE.Vector2();
+			const raycaster = new THREE.Raycaster();
+
+			
+for(var i =0; i < 2000; i++){
+  const ciao = getRandomColor();
+  const color2 = new THREE.Color(ciao);
+const geometry = new THREE.SphereGeometry( 20, 20, 20 );
+//var lo = loader1;
+//lo.center.set(Math.random()*0.9,Math.random()*0.9);
+const material  = new THREE.MeshLambertMaterial({map: loader1});
+var nu = Math.random()*10;
+if(nu< 3){
+			material.map = loader1;
+}else if(nu<6){
+material.map = loader2;
+}else{
+  material.map = loader3;
+  
+}
+			//const material = new THREE.MeshLambertMaterial( {map: loader.load('res/planet1.jpg')});
+			
+			const cube = new THREE.Mesh( geometry, material );
+			
+cube.
+position.x = Math.random() * 1500;
+				cube.position.y = Math.random() * 1500;
+				cube.position.z = Math.random() * 1500;
+				var fact = Math.random() + 0.1;
+cube.scale.x=fact;
+cube.scale.y=fact;
+	cube.scale.z=fact;
+			scene.add( cube );
+			
+			
+  
+}
+const geometry1 = new THREE.BoxGeometry( 20, 20, 20 );
+		//	const material1 = new THREE.MeshBasicMaterial( { color: new THREE.Color(Number(getRandomColor()))} );
+		const material1 = new THREE.MeshLambertMaterial({map: astr});
+			const cube1 = new THREE.Mesh( geometry1, material1 );
+			
+
+				var fact1 = 5;
+				//cube1.position.set(700,700,899);
+//cube1.scale.x=fact;
+//cube1.scale.y=fact;
+	//cube1.scale.z=fact;
+			//scene.add( cube1 );
+		//scene.add(spotLight.target);
+		
+		 
+					//let geometrytri = new THREE.ShapeGeometry( tri );
+					const geometrytri = new THREE.BoxGeometry( 50, 50, 50 );
+						let meshtri = new THREE.Mesh( geometrytri, new THREE.MeshPhongMaterial( { map: loader, side: THREE.DoubleSide} ) );
+						meshtri.scale.set(1,1, 1);
+						
+						
+						const tri = new THREE.Shape()
+					tri.moveTo( 60, 10 )
+					tri.lineTo( 40, 80 )
+					tri.lineTo( 120, 80 )
+					tri.lineTo( 80, 20 );
+					const geometrytri2 = new THREE.CylinderGeometry(0,1,5,10,10 );
+					geometrytri2.rotateX(Math.PI/2);
+						let trimesh = new THREE.Mesh( geometrytri2, new THREE.MeshPhongMaterial( { color: 0xfffff00} ) );
+						trimesh.scale.set(2,2,2);//meshtri.position.set(100,100,100);
+						//meshtri.rotation.x= 180;
+						//meshtri.updateMatrix();
+//meshtri.translateZ( -100);
+//meshtri.translateY(-200);
+//meshtri.translateX(-90)
+//scene.add(meshtri);
+/*
+group = new THREE.Group();
+group.add(meshtri);
+group.add(camera);
+group.add(spotLight);
+group.position.set(700,700,799);
+*/
+//camera.position.set(meshtri.position.x,meshtri.position.y,meshtri.position.z);
+//camera.translateZ(250);
+//camera.translateY(150);
+//camera.translateX(-50);
+
+//camera.rotation.order = 'YXZ';
+/*
+camera.rotation.z=(Math.PI/2);
+//camera.rotation.set(0, -45,0)
+camera.rotation.y=-(Math.PI/6);
+camera.rotation.x = -(Math.PI/6);
+*/
+//scene.add(group);
+meshtri.position.set(700,700,799);
+meshtri.add(camera);
+meshtri.add(spotLight);
+meshtri.add(trimesh);
+trimesh.translateZ(-80);
+//trimesh.translateY(-80);
+//trimesh.translateX(-40);
+spotLight.translateZ(300);
+spotLight.translateY(300);
+camera.translateZ(100);
+camera.translateY(100);
+camera.lookAt(meshtri.position);
+scene.add(meshtri);
+scene.add(cube1);
+		
+		
+      var roitz =0;
+      var roity = 0;
+      var roitx = 0;
+      var ss = false;
+      var clic = false;
+      var ll = false;
+			//camera.lookAt(1000,1000,0);
+			//scene.add(spotLight);
+document.addEventListener( 'mousemove', onPointerMove );
+//document.addEventListener( 'touchstart', onPointerMoveUp );
+			
+			//camera.position.copy(meshtri.position);
+			function animate() {
+				requestAnimationFrame( animate );
+				//camera.lookAt(meshtri.position);
+				//directionalLight.position= camera.position;
+   //spotLight.position.set(mex,mey,mez);
+   //spotLight.target.position.x = pointer.position.x;
+   //spotLight.target.position.y = pointer.position.y;
+  // spotLight.target.position.z = pointer.position.z;
+				
+    thatx = cube1.position.x;
+		thaty = cube1.position.y
+		thatz = cube1.position.z
+		mex = camera.position.x;
+		mey = camera.position.y;
+		mez = camera.position.z;
+		
+		//spotLight.position.set(meshtri.position);
+		//document.getElementById('text').innerHTML = 'x:'+mex+'/ y:'+mey+'/ z:'+mez+'<br>x='+thatx+' y='+thaty+' z='+thatz;
+				//camera.matrixWorld.position.x+=1;
+				//camera.matrixWorld.position.y += 1;
+				//camera.matrixWorld.position.z +=1;
+				if (ss == true){
+				
+				//camera.lookAt(meshtri.position);
+				
+meshtri.translateZ(-5);
+				}
+			if (ll == true){
+				
+				//camera.lookAt(cube1.position);
+				//meshtri.position.copy(cube1.position);
+				//meshtri.translateZ(25);
+				roitx =0;
+				roity =0;
+				roitz =0;
+				ll=false;
+				//meshtri.lookAt(cube1.position);
+				}	
+				
+				
+    meshtri.rotation.x += roitx;
+    meshtri.rotation.y += roity;
+   meshtri.rotation.z += roitz;
+   
+   //meshtri.position.set(mex+10, mey-10,mez);
+   //trimesh.rotation.z = .5;
+   trimesh.lookAt(cube1.position);
+   raycaster.setFromCamera( pointer, camera );
+   var ue = [cube1];
+  var intersects = raycaster.intersectObjects(ue, false );
+if (intersects.length > 0 )
+{
+  if(intersects[0].object == cube1 && clic==true){
+  alert('You just found the "The Cube!"');
+  cube1.position.x = Math.random() * 2000;
+cube1.position.y = Math.random() * 2000;
+cube1.position.z = Math.random() * 2000;
+  clic=false;
+  intersects = [];
+  pointer.x = 0;
+  pointer.y= 0;
+}
+}
+   //clic= false;
+   //camera.position.set(meshtri.position.x+50,meshtri.position.y,meshtri.position.z+580);
+   //camera.rotation.y = 180;
+   //camera.rotation.z = 90;
+   //camera.rotation.x = 180;
+   //camera.position.x =meshtri.position.x-50;
+   //camera.position.y 100;
+  
+   //camera.lookAt(meshtri.position);
+				renderer.render( scene, camera );
+				
+				
+			}
+
+			animate();
+			function onPointerMoveUp(){
+			  clic= true;
+			  
+			}
+			function onPointerMove( event ) {
+
+				pointer.x = ( event.clientX / window.innerWidth ) * 2- 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+				//clic = true;
+}
+			function rotz(){
+			  roitz-=0.01;
+			  
+			}
+			function roty(){
+			  roity-=0.01;
+			  
+			}
+			function rotzm(){
+			  roitz+=0.01;
+			  
+			}
+			function rotym(){
+			  roity+=0.01;
+			  
+			}
+			function rotxm(){
+			  roitx+=0.01;
+			  
+			}
+			function rotx(){
+			  roitx-=0.01;
+			  
+			}
+			function Sss(){
+			   if(ss == true){
+			     ss = false;
+			   }else{
+			  ss = true;
+			  }
+			}
+			function look(){
+			   if(ll == true){
+			     ll = false;
+			   }else{
+			  ll = true;
+			  }
+			}
+			function getRandomColor() {
+                var letters = '0123456789abcdef';
+                var color = '0x';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+		</script>
+	</body>
+</html>
